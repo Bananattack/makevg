@@ -32,7 +32,10 @@ if __name__ == '__main__':
     if not os.path.exists(destdir):
         os.makedirs(destdir)
  
+    print('- Building...')
     for filename in sys.argv[2:]:
         result = md.convert(open(filename).read())
         dest = os.path.join(destdir, os.path.splitext(filename)[0] + '.html')
         open(dest, 'w').write(result)
+        print('  ' + filename + ' -> ' + dest)
+    print('- Done!')
