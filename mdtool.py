@@ -36,6 +36,7 @@ if __name__ == '__main__':
     for filename in sys.argv[2:]:
         result = md.convert(open(filename).read())
         dest = os.path.join(destdir, os.path.splitext(filename)[0] + '.html')
-        open(dest, 'w').write(result)
+        with open(dest, 'w') as out:
+            out.write(result)
         print('  ' + filename + ' -> ' + dest)
     print('- Done!')
