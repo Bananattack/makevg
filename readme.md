@@ -6,7 +6,7 @@ This repository serves as open location to contribute docs and get plain-text (m
 
 *Documents are under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-nc-sa/3.0/), unless otherwise noted.*
 
-*For scripts, the license is included in the source, so check there.*
+*For scripts, the license is included in the source.*
 
 mdtool.py
 ---------
