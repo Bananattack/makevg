@@ -10,6 +10,6 @@ This repository serves as open location to contribute docs and get plain-text (m
 
 mdtool.py
 ---------
-This script is useful for taking a bunch of markdown files and dumping the output into a directory of .html files. To use this, make sure that Python-Markdown's *markdown* module (from https://github.com/waylan/Python-Markdown/ or in PyPI) is installed or otherwise on your *sys.path* or *PYTHONPATH*.
+This script is useful for taking a bunch of markdown files and dumping the output into a directory of .html files. To use this, make sure that Python-Markdown's **markdown** module (from https://github.com/waylan/Python-Markdown/ or in PyPI) is installed or otherwise on your sys.path.
 
 Run `./mdtool.py` without arguments to see its usage.
