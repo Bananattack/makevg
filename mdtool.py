@@ -64,6 +64,12 @@ def build_toc(content):
                 tag_id = conflict_id
             item.set('id', tag_id)
             ids.add(tag_id)
+
+            anchor = xml.etree.ElementTree.Element('a', {'href': '#' + tag_id})
+            anchor.text = item.text
+            item.text = None
+            item.append(anchor)
+            
             child = ([], tag_id)
 
             if depth < tag_depth:
@@ -103,7 +109,7 @@ if __name__ == '__main__':
     print(docs)
 
     print('- Building...')
-    md = markdown.Markdown(output_format='html5')
+    md = markdown.Markdown()
     for filename in docs:
         content = md.convert(open(filename).read())
         content = xml.etree.ElementTree.fromstring('<div class="content">{0}</div>'.format(content))
