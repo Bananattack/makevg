@@ -85,8 +85,30 @@ def build_toc(content):
                         depth, parent = stack.pop()
                 stack[-1][1][0].append(child)
                 parent = child
-    print(toc)
     return toc
+
+SITE_TITLE = 'make.vg'
+TEMPLATE = '''<!doctype html>
+<html>
+    <head>
+        <link rel='stylesheet' type="text/css" href='/style.css' />
+        <title>{title}</title>
+    </head>
+    <body>
+        <div class='header'>
+            <h1>''' + SITE_TITLE + '''</h1>
+            <div class='separator'></div>
+        </div>
+        <div class='countdown'>
+            <div class='wrapper'>
+                <div class='subwrapper'>
+                </div>
+            </div>
+        </div>
+        {content}
+    </body>
+</html>
+'''
 
 
 if __name__ == '__main__':
@@ -94,29 +116,35 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         if len(sys.argv) > 3:
             sys.stderr.write('  (Too many arguments.)\n')
-        exit('  Usage: ' + APPNAME + ' destdir sourcedir\n')
+        exit('- Usage: ' + APPNAME + ' destdir sourcedir')
 
     srcdir = sys.argv[2]
     if not os.path.exists(srcdir):
-        exit('  ' + APPNAME + ' - fatal: Could not find source directory "' + srcdir + '".\n')
+        exit('- ' + APPNAME + ' - fatal: Could not find source directory "' + srcdir + '".')
     if not os.path.isdir(srcdir):
-        exit('  ' + APPNAME + ' - fatal: Source path "' + srcdir + '" is a file, not a directory. Whoops.\n')
+        exit('- ' + APPNAME + ' - fatal: Source path "' + srcdir + '" is a file, not a directory. Whoops.')
 
     destdir = sys.argv[1]
     if not os.path.exists(destdir):
         os.makedirs(destdir)
 
     docs = listdir(srcdir, ['.md']) 
-    print(docs)
+    if not len(docs):
+        exit('- ' + APPNAME + ' - fatal: Source tree "' + srcdir + '" contains no .md files.')
 
-    print('- Building...')
+    print('- Building ' + str(len(docs)) + ' document(s)...')
     md = markdown.Markdown()
     for filename in docs:
         content = md.convert(open(filename).read())
         content = xml.etree.ElementTree.fromstring('<div class="content">{0}</div>'.format(content))
+
+        # Make a title.
+        title = content.find('h1').text
+        title = (title + ' - ' if title else '') + SITE_TITLE
+
         # Build pretty links, and a table of contents we could potentially use later.
         toc = build_toc(content)
-        result = xml.etree.ElementTree.tostring(content)
+        result = TEMPLATE.format(title=title, content=xml.etree.ElementTree.tostring(content))
 
         dirname = os.path.normpath(os.path.join(destdir, os.path.relpath(srcdir, os.path.dirname(filename))))
         dest = os.path.join(dirname, os.path.basename(os.path.splitext(filename)[0] + '.html'))
