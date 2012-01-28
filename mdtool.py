@@ -19,23 +19,102 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import re
 import os
 import sys
 import markdown # Requires Python-Markdown.
+import xml.etree.ElementTree
+import pprint
+
+def listdir(base, extensions):
+    result = []
+    for path in os.listdir(base):   
+        path = os.path.join(base, path)
+        if os.path.isdir(path):
+            result.extend(listdir(path, extensions))
+        elif os.path.isfile(path) and os.path.splitext(path)[1].lower() in extensions:
+            result.append(os.path.normpath(path))
+    return result
+
+def build_toc(content):
+    ids = set()
+    toc = []
+    stack = []
+    depth = 0
+    parent = (toc,)
+    for item in list(content):
+        tag = item.tag
+        if tag[0] == 'h' and tag[1].isdigit():
+            tag_depth = int(tag[1])
+            # Trim leading whitspace, and convert to lowercase.
+            tag_id = item.text.lstrip().lower()
+            # Replace spaces with dashes.
+            tag_id = re.sub('[ \t]', '-', tag_id)
+            # Strip weird special characters.
+            tag_id = re.sub('[^-a-zA-Z0-9._]', '', tag_id)
+            # Strip trailing underscores/dashes/dots
+            tag_id = tag_id.rstrip('_-.')
+            
+            if tag_id in ids:
+                n = 1
+                conflict_id = tag_id
+                while conflict_id in ids:
+                    n += 1
+                    conflict_id = tag_id + '-' + str(n)
+                tag_id = conflict_id
+            item.set('id', tag_id)
+            ids.add(tag_id)
+            child = ([], tag_id)
+
+            if depth < tag_depth:
+                parent[0].append(child)
+                stack.append((depth, parent))
+                parent = child
+                depth = tag_depth
+            elif depth >= tag_depth:
+                while depth > tag_depth:
+                    depth, parent = stack.pop()
+                    if depth < tag_depth:
+                        stack.append((depth, parent))
+                        depth = tag_depth
+                stack[-1][1][0].append(child)
+                parent = child
+    return toc
+
 
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        exit('Usage: ' + os.path.basename(sys.argv[0]) + ' destdir ...files\n')
+    APPNAME = os.path.basename(sys.argv[0])
+    if len(sys.argv) != 3:
+        if len(sys.argv) > 3:
+            sys.stderr.write('  (Too many arguments.)\n')
+        exit('  Usage: ' + APPNAME + ' destdir sourcedir\n')
+
+    srcdir = sys.argv[2]
+    if not os.path.exists(srcdir):
+        exit('  ' + APPNAME + ' - fatal: Could not find source directory "' + srcdir + '".\n')
+    if not os.path.isdir(srcdir):
+        exit('  ' + APPNAME + ' - fatal: Source path "' + srcdir + '" is a file, not a directory. Whoops.\n')
 
     destdir = sys.argv[1]
     if not os.path.exists(destdir):
         os.makedirs(destdir)
 
+    docs = listdir(srcdir, ['.md']) 
+    print(docs)
+
     print('- Building...')
     md = markdown.Markdown(output_format='html5')
-    for filename in sys.argv[2:]:
-        result = md.convert(open(filename).read())
-        dest = os.path.join(destdir, os.path.splitext(filename)[0] + '.html')
+    for filename in docs:
+        content = md.convert(open(filename).read())
+        content = xml.etree.ElementTree.fromstring('<div class="content">{0}</div>'.format(content))
+        # Build pretty links, and a table of contents we could potentially use later.
+        toc = build_toc(content)
+        result = xml.etree.ElementTree.tostring(content)
+
+        dirname = os.path.normpath(os.path.join(destdir, os.path.relpath(srcdir, os.path.dirname(filename))))
+        dest = os.path.join(dirname, os.path.basename(os.path.splitext(filename)[0] + '.html'))
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
         with open(dest, 'w') as out:
             out.write(result)
         print('  ' + filename + ' -> ' + dest)
