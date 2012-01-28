@@ -79,12 +79,13 @@ def build_toc(content):
                 depth = tag_depth
             elif depth >= tag_depth:
                 while depth > tag_depth:
-                    depth, parent = stack.pop()
-                    if depth < tag_depth:
-                        stack.append((depth, parent))
+                    if stack[-1][0] < tag_depth:
                         depth = tag_depth
+                    else:
+                        depth, parent = stack.pop()
                 stack[-1][1][0].append(child)
                 parent = child
+    print(toc)
     return toc
 
 
