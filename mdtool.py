@@ -88,6 +88,7 @@ def build_toc(content):
     return toc
 
 SITE_TITLE = 'make.vg'
+SITE_ROOT_URL = '/'
 TEMPLATE = '''<!doctype html>
 <html>
     <head>
@@ -96,7 +97,7 @@ TEMPLATE = '''<!doctype html>
     </head>
     <body>
         <div class='header'>
-            <h1>''' + SITE_TITLE + '''</h1>
+            <h1><a href="''' + SITE_ROOT_URL + '''">''' + SITE_TITLE + '''</a></h1>
             <div class='separator'></div>
         </div>
         <div class='countdown'>
