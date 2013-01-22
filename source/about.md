@@ -1,7 +1,7 @@
 title: About
 path: me
 sticky
---
+//
 <h2>Andrew G. Crowell</h2>
 <h3>Independent Game Developer, Programmer, Pixel Artist</h3>
 <p>Sarnia, Ontario</p>
