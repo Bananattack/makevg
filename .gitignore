@@ -1,4 +1,4 @@
 *.html
 *.swp
 output
-include/images
+include

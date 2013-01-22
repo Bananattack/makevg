@@ -34,7 +34,18 @@ def listdir(base, extensions=None):
             result.append(os.path.normpath(path))
     return result
 
-template = '''<!doctype html>
+
+SRC = 'source'
+OUT = 'output'
+INC = 'include'
+ROOT_URL = 'http://make.vg/'
+ROOT_TITLE = 'make.vg'
+ROOT_DESCRIPTION = 'Andrew G. Crowell is an independent game developer / programmer / pixel artist from Sarnia, Ontario. He is working on Revenants, an exploratory action sidescroller.'
+STYLESHEET_PATH = 'style.css'
+FAVICON_PATH = 'images/make.vg.logo.png'
+PREVIEW_IMAGE_PATH = 'images/make.vg.logo.png'
+
+TEMPLATE = '''<!doctype html>
 <html>
 <head>
     <title>{title}</title>
@@ -57,22 +68,17 @@ template = '''<!doctype html>
 '''
 
 if __name__ == '__main__':
-    src = 'source'
-    out = 'output'
-    inc = 'include'
-    rooturl = 'http://make.vg/'
-    docs = listdir(src, ['.md'])
+    if os.path.isdir(OUT):
+        shutil.rmtree(OUT)
 
-    if os.path.isdir(out):
-        shutil.rmtree(out)
-
-    if os.path.isdir(inc):
-        shutil.copytree(inc, out)
+    if os.path.isdir(INC):
+        shutil.copytree(INC, OUT)
     else:
-        os.makedirs(out)
+        os.makedirs(OUT)
 
+    docs = listdir(SRC, ['.md'])
     if not len(docs):
-        exit('- lazyweb - fatal: Source tree "' + src + '" contains no .md files.')
+        exit('- lazyweb - fatal: Source tree "' + SRC + '" contains no .md files.')
     for doc in docs:
         lines = open(doc).read().splitlines()
         found = False
@@ -83,35 +89,30 @@ if __name__ == '__main__':
                 if line.strip() == '//':
                     found = True
                 else:
-                    before, _, after = line.partition(':')
-                    before = before.strip().lower()
-                    after = after.strip()
-                    settings.append((before, after))
+                    key, _, value = line.partition(':')
+                    settings.append((key.strip().lower(), value.strip()))
             else:
                 content.append(line)
 
-        paths = [os.path.relpath(os.path.splitext(doc)[0], src)] + [v for k, v in settings if k == 'path']
+        paths = [os.path.relpath(os.path.splitext(doc)[0], SRC)] + [v for k, v in settings if k == 'path']
         title = next((v for k, v in settings if k == 'title'), os.path.basename(paths[0]))
-        description = next((v for k, v in settings if k == 'description'),
-            'Andrew G. Crowell is an independent game developer / programmer / pixel artist from Sarnia, Ontario. He is working on Revenants, an exploratory action sidescroller.'
-        )
+        description = next((v for k, v in settings if k == 'description'), ROOT_DESCRIPTION)
         if next((k for k, v in settings if k == 'explicit_path'), False):
             paths.pop(0)
         if next((k for k, v in settings if k == 'sticky'), False):
             paths.append('')
         
-        print(title)
-        print(paths)
+        print(title + ' -> ' + ', '.join(urlparse.urljoin(ROOT_URL, path) for path in paths))
         for path in paths:
-            if not os.path.exists(os.path.join(out, path)):
-                os.makedirs(os.path.join(out, path))
-            with open(os.path.join(out, path, 'index.html'), 'w') as result:
-                result.write(template.format(
-                    title = (title + ' - ' if path else '') + 'make.vg',
-                    canonical_url = urlparse.urljoin(rooturl, path),
-                    css_url = urlparse.urljoin(rooturl, 'style.css'),
-                    favicon_url = urlparse.urljoin(rooturl, 'favicon.ico'),
-                    preview_image_url = urlparse.urljoin(rooturl, 'images/make.vg.logo.png'),
+            if not os.path.exists(os.path.join(OUT, path)):
+                os.makedirs(os.path.join(OUT, path))
+            with open(os.path.join(OUT, path, 'index.html'), 'w') as result:
+                result.write(TEMPLATE.format(
+                    title = (title + ' - ' if path else '') + ROOT_TITLE,
+                    canonical_url = urlparse.urljoin(ROOT_URL, path),
+                    css_url = urlparse.urljoin(ROOT_URL, STYLESHEET_PATH),
+                    favicon_url = urlparse.urljoin(ROOT_URL, FAVICON_PATH),
+                    preview_image_url = urlparse.urljoin(ROOT_URL, PREVIEW_IMAGE_PATH),
                     description = description,
                     content = '\n'.join(content),
                 ))
