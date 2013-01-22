@@ -22,6 +22,7 @@
 
 import os
 import shutil
+import datetime
 import urlparse
 
 def listdir(base, extensions=None):
@@ -48,6 +49,7 @@ PREVIEW_IMAGE_PATH = 'images/make.vg.logo.png'
 TEMPLATE = '''<!doctype html>
 <html>
 <head>
+    <meta charset='utf-8' />
     <title>{title}</title>
     <link rel='stylesheet' type='text/css' href='{css_url}'>
     <link rel='shortcut icon' type='image/png' href='{favicon_url}' />
@@ -64,7 +66,9 @@ TEMPLATE = '''<!doctype html>
     <h1><a class='header' href='{root_url}'>{header}</a></h1>
     {content}
     <p class='article_tools'><a href='{source_code_url}'>source</a> &mdash; <a href='{permalink_url}'>permalink</a></p>
-    <p class='footnote'>(<a href='http://bananattack.com/'>bananattack.com</a> for my other, older stuff. &mdash; <a href='https://github.com/Bananattack/wiz'>wiz</a> is a high-level 8-bit 6502 / Z80 assembly language I made.)</p>
+    <p class='footnote'>
+    <a href='http://bananattack.com/'>bananattack.com</a> for my other, older stuff. &mdash; <a href='https://github.com/Bananattack/wiz'>wiz</a> is a high-level 8-bit 6502 / Z80 assembly language I made.<br/><br/>
+    Copyright &copy; {year} Andrew G. Crowell. All rights reserved.<br/>Some content of this site is available under more permissive terms, see <a href='https://github.com/Bananattack/makevg'>here</a>.</p>
 </body>
 </html>
 '''
@@ -118,6 +122,7 @@ if __name__ == '__main__':
                 result.write(TEMPLATE.format(
                     root_url = ROOT_URL,
                     header = ROOT_TITLE,
+                    year = datetime.date.today().year,
                     title = (title + ' - ' if path else '') + ROOT_TITLE,
                     canonical_url = urlparse.urljoin(ROOT_URL, canonical_path) if path else ROOT_URL,
                     permalink_url = urlparse.urljoin(ROOT_URL, canonical_path),
