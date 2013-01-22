@@ -97,6 +97,7 @@ if __name__ == '__main__':
         paths = [os.path.relpath(os.path.splitext(doc)[0], SRC)] + settings.get('path', [])
         title = settings['title'][0] if 'title' in settings else os.path.basename(paths[0])
         description = settings['description'][0] if 'description' in settings else ROOT_DESCRIPTION
+        
         if 'explicit_path' in settings:
             paths.pop(0)
 
