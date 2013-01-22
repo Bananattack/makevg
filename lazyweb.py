@@ -108,7 +108,7 @@ if __name__ == '__main__':
                 os.makedirs(os.path.join(OUT, path))
             with open(os.path.join(OUT, path, 'index.html'), 'w') as result:
                 result.write(TEMPLATE.format(
-                    header = ROOT_TITLE
+                    header = ROOT_TITLE,
                     title = (title + ' - ' if path else '') + ROOT_TITLE,
                     canonical_url = urlparse.urljoin(ROOT_URL, path),
                     css_url = urlparse.urljoin(ROOT_URL, STYLESHEET_PATH),
