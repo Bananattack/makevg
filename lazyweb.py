@@ -122,5 +122,5 @@ if __name__ == '__main__':
                     content = '\n'.join(content),
                 ))
     if not stickied:
-        exit('\n*** warning: Source tree "' + SRC + '" contains no file with the "sticky" attribute! There is no index page.')
+        exit('\n*** warning: Source tree "' + SRC + '" contains no file with the "sticky" attribute! There will be no index page at ' + ROOT_URL)
 
