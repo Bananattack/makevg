@@ -42,7 +42,7 @@ ROOT_URL = 'http://make.vg/'
 ROOT_TITLE = 'make.vg'
 ROOT_DESCRIPTION = 'Andrew G. Crowell is an independent game developer / programmer / pixel artist from Sarnia, Ontario. He is working on Revenants, an exploratory action sidescroller.'
 STYLESHEET_PATH = 'style.css'
-FAVICON_PATH = 'images/make.vg.logo.png'
+FAVICON_PATH = 'favicon.ico'
 PREVIEW_IMAGE_PATH = 'images/make.vg.logo.png'
 
 TEMPLATE = '''<!doctype html>
