@@ -76,8 +76,9 @@ if __name__ == '__main__':
         os.makedirs(OUT)
 
     docs = listdir(SRC, ['.md'])
+    stickied = False
     if not len(docs):
-        exit('- lazyweb - fatal: Source tree "' + SRC + '" contains no .md files.')
+        exit('*** fatal: Source tree "' + SRC + '" contains no .md files.')
     for doc in docs:
         lines = open(doc).read().splitlines()
         count = 2
@@ -98,7 +99,11 @@ if __name__ == '__main__':
         description = settings['description'][0] if 'description' in settings else ROOT_DESCRIPTION
         if 'explicit_path' in settings:
             paths.pop(0)
+
+        canonical_path = settings['canonical'][0] if 'canonical' in settings else paths[0]
+
         if 'sticky' in settings:
+            stickied = True
             paths.append('')
         
         print(title + ' -> ' + ', '.join(urlparse.urljoin(ROOT_URL, path) for path in paths))
@@ -109,11 +114,13 @@ if __name__ == '__main__':
                 result.write(TEMPLATE.format(
                     header = ROOT_TITLE,
                     title = (title + ' - ' if path else '') + ROOT_TITLE,
-                    canonical_url = urlparse.urljoin(ROOT_URL, path),
+                    canonical_url = urlparse.urljoin(ROOT_URL, canonical_path) if path else ROOT_URL,
                     css_url = urlparse.urljoin(ROOT_URL, STYLESHEET_PATH),
                     favicon_url = urlparse.urljoin(ROOT_URL, FAVICON_PATH),
                     preview_image_url = urlparse.urljoin(ROOT_URL, PREVIEW_IMAGE_PATH),
                     description = description,
                     content = '\n'.join(content),
                 ))
+    if not stickied:
+        exit('\n*** warning: Source tree "' + SRC + '" contains no file with the "sticky" attribute! There is no index page.')
 
