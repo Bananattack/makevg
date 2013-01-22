@@ -13,4 +13,3 @@ sticky
     </li>
     <li>c. This is a vacant website so far, content of actual substance is forthcoming.</li>
 </ul>
-<p class='footnote'>(<a href='http://bananattack.com/'>bananattack.com</a> for my other, older stuff. &mdash; <a href='https://github.com/Bananattack/wiz'>wiz</a> is a high-level 8-bit 6502 / Z80 assembly language I made.)</p>

@@ -62,8 +62,9 @@ TEMPLATE = '''<!doctype html>
 </head>
 <body class='page'>
     <h1><a class='header' href='{root_url}'>{header}</a></h1>
-    <p class='article_tools'><a href='{source_code_url}'>source</a> &mdash; <a href='{permalink_url}'>permalink</a></p>
     {content}
+    <p class='article_tools'><a href='{source_code_url}'>source</a> &mdash; <a href='{permalink_url}'>permalink</a></p>
+    <p class='footnote'>(<a href='http://bananattack.com/'>bananattack.com</a> for my other, older stuff. &mdash; <a href='https://github.com/Bananattack/wiz'>wiz</a> is a high-level 8-bit 6502 / Z80 assembly language I made.)</p>
 </body>
 </html>
 '''
