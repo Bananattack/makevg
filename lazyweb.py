@@ -81,18 +81,18 @@ if __name__ == '__main__':
         exit('- lazyweb - fatal: Source tree "' + SRC + '" contains no .md files.')
     for doc in docs:
         lines = open(doc).read().splitlines()
-        found = False
+        count = 2
         settings = []
         content = []
         for line in lines:
-            if not found:
-                if line.strip() == '--':
-                    found = True
+            if not count:
+                content.append(line)
+            else:
+                if line.strip() == '```':
+                    count -= 1
                 else:
                     key, _, value = line.partition(':')
                     settings.append((key.strip().lower(), value.strip()))
-            else:
-                content.append(line)
 
         paths = [os.path.relpath(os.path.splitext(doc)[0], SRC)] + [v for k, v in settings if k == 'path']
         title = next((v for k, v in settings if k == 'title'), os.path.basename(paths[0]))
