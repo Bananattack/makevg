@@ -44,7 +44,6 @@ ROOT_DESCRIPTION = 'Andrew G. Crowell is an independent game developer / program
 STYLESHEET_PATH = 'style.css'
 FAVICON_PATH = 'favicon.ico'
 PREVIEW_IMAGE_PATH = 'images/make.vg.logo.png'
-
 TEMPLATE = '''<!doctype html>
 <html>
 <head>
