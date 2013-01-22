@@ -81,7 +81,7 @@ if __name__ == '__main__':
     for doc in docs:
         lines = open(doc).read().splitlines()
         count = 2
-        settings = []
+        settings = {}
         content = []
         for line in lines:
             if not count:
@@ -91,14 +91,14 @@ if __name__ == '__main__':
                     count -= 1
                 else:
                     key, _, value = line.partition(':')
-                    settings.append((key.strip().lower(), value.strip()))
+                    settings.setdefault(key.strip().lower(), []).append(value.strip())
 
-        paths = [os.path.relpath(os.path.splitext(doc)[0], SRC)] + [v for k, v in settings if k == 'path']
-        title = next((v for k, v in settings if k == 'title'), os.path.basename(paths[0]))
-        description = next((v for k, v in settings if k == 'description'), ROOT_DESCRIPTION)
-        if next((k for k, v in settings if k == 'explicit_path'), False):
+        paths = [os.path.relpath(os.path.splitext(doc)[0], SRC)] + settings.get('path', [])
+        title = settings['title'][0] if 'title' in settings else os.path.basename(paths[0])
+        description = settings['description'][0] if 'description' in settings else ROOT_DESCRIPTION
+        if 'explicit_path' in settings:
             paths.pop(0)
-        if next((k for k, v in settings if k == 'sticky'), False):
+        if 'sticky' in settings:
             paths.append('')
         
         print(title + ' -> ' + ', '.join(urlparse.urljoin(ROOT_URL, path) for path in paths))
