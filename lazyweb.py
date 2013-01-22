@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2012 Andrew G. Crowell
+# Copyright (C) 2013 Andrew G. Crowell
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
