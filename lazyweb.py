@@ -60,7 +60,7 @@ if __name__ == '__main__':
     src = 'source'
     out = 'output'
     inc = 'include'
-    rooturl = ''#'http://make.vg/'
+    rooturl = 'http://make.vg/'
     docs = listdir(src, ['.md'])
 
     if os.path.isdir(out):

@@ -1,5 +1,4 @@
 title: About
-path: me
 sticky
 //
 <h2>Andrew G. Crowell</h2>
