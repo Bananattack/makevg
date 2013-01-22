@@ -86,7 +86,7 @@ if __name__ == '__main__':
         content = []
         for line in lines:
             if not found:
-                if line.strip() == '//':
+                if line.strip() == '-':
                     found = True
                 else:
                     key, _, value = line.partition(':')
