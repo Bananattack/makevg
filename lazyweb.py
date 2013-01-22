@@ -38,6 +38,7 @@ def listdir(base, extensions=None):
 SRC = 'source'
 OUT = 'output'
 INC = 'include'
+REPO_URL = 'https://github.com/Bananattack/makevg/blob/master/'
 ROOT_URL = 'http://make.vg/'
 ROOT_TITLE = 'make.vg'
 ROOT_DESCRIPTION = 'Andrew G. Crowell is an independent game developer / programmer / pixel artist from Sarnia, Ontario. He is working on Revenants, an exploratory action sidescroller.'
@@ -60,7 +61,8 @@ TEMPLATE = '''<!doctype html>
     <meta property='og:description' content='{description}' />
 </head>
 <body class='page'>
-    <h1><a class='header' href='#'>{header}</a></h1>
+    <h1><a class='header' href='{root_url}'>{header}</a></h1>
+    <p class='article_tools'><a href='{source_code_url}'>source</a> &mdash; <a href='{permalink_url}'>permalink</a></p>
     {content}
 </body>
 </html>
@@ -97,7 +99,7 @@ if __name__ == '__main__':
         paths = [os.path.relpath(os.path.splitext(doc)[0], SRC)] + settings.get('path', [])
         title = settings['title'][0] if 'title' in settings else os.path.basename(paths[0])
         description = settings['description'][0] if 'description' in settings else ROOT_DESCRIPTION
-        
+
         if 'explicit_path' in settings:
             paths.pop(0)
 
@@ -113,12 +115,15 @@ if __name__ == '__main__':
                 os.makedirs(os.path.join(OUT, path))
             with open(os.path.join(OUT, path, 'index.html'), 'w') as result:
                 result.write(TEMPLATE.format(
+                    root_url = ROOT_URL,
                     header = ROOT_TITLE,
                     title = (title + ' - ' if path else '') + ROOT_TITLE,
                     canonical_url = urlparse.urljoin(ROOT_URL, canonical_path) if path else ROOT_URL,
+                    permalink_url = urlparse.urljoin(ROOT_URL, canonical_path),
                     css_url = urlparse.urljoin(ROOT_URL, STYLESHEET_PATH),
                     favicon_url = urlparse.urljoin(ROOT_URL, FAVICON_PATH),
                     preview_image_url = urlparse.urljoin(ROOT_URL, PREVIEW_IMAGE_PATH),
+                    source_code_url = urlparse.urljoin(REPO_URL, doc),
                     description = description,
                     content = '\n'.join(content),
                 ))
