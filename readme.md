@@ -1,8 +1,7 @@
 make.vg
 =======
 
-**make.vg** is a collaborative tutorial website and link aggregator that collects useful game-making topics in one place.
-This repository serves as an open location to contribute docs and get plain-text (markdown-like) versions of the docs. This is a **work-in-progress**.
+**make.vg** is a web space for Andrew G. Crowell, an independent game developer. This repository serves as an open location for the pages that will appear on the site. All documents are HTML fragments, cleverly tagged as Markdown files, so that they can be previewed on Github -- HTML is permissible subset of Markdown.
 
 *Documents are under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-nc-sa/3.0/), unless otherwise noted.*
 
