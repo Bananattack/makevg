@@ -87,11 +87,11 @@ if __name__ == '__main__':
     if not len(docs):
         exit('*** fatal: Source tree "' + SRC + '" contains no .md files.')
     for doc in docs:
-        lines = open(doc).read().splitlines()
         count = 2
         settings = {}
         content = []
-        for line in lines:
+
+        for line in open(doc):
             if not count:
                 content.append(line)
             else:
