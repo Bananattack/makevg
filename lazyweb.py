@@ -25,16 +25,21 @@ import shutil
 import datetime
 import urlparse
 
+def urljoin(*args):
+    return urlparse.urljoin(*args)
+
+def pathjoin(*args):
+    return os.path.join(*args).replace('\\', '/')
+
 def listdir(base, extensions=None):
     result = []
     for path in os.listdir(base):   
-        path = os.path.join(base, path)
+        path = pathjoin(base, path)
         if os.path.isdir(path):
             result.extend(listdir(path, extensions))
         elif os.path.isfile(path) and (extensions is None or os.path.splitext(path)[1].lower() in extensions):
             result.append(os.path.normpath(path))
     return result
-
 
 SRC = 'source'
 OUT = 'output'
@@ -101,7 +106,7 @@ if __name__ == '__main__':
                     key, _, value = line.partition(':')
                     settings.setdefault(key.strip().lower(), []).append(value.strip())
 
-        paths = [os.path.relpath(os.path.splitext(doc)[0], SRC)] + settings.get('path', [])
+        paths = [path.replace('\\', '/') for path in [os.path.relpath(os.path.splitext(doc)[0], SRC)] + settings.get('path', [])]
         title = settings['title'][0] if 'title' in settings else os.path.basename(paths[0])
         description = settings['description'][0] if 'description' in settings else ROOT_DESCRIPTION
 
@@ -114,22 +119,22 @@ if __name__ == '__main__':
             stickied = True
             paths.append('')
         
-        print(title + ' -> ' + ', '.join(urlparse.urljoin(ROOT_URL, path) for path in paths))
+        print(title + ' -> ' + ', '.join(urljoin(ROOT_URL, path) for path in paths))
         for path in paths:
-            if not os.path.exists(os.path.join(OUT, path)):
-                os.makedirs(os.path.join(OUT, path))
-            with open(os.path.join(OUT, path, 'index.html'), 'w') as result:
+            if not os.path.exists(pathjoin(OUT, path)):
+                os.makedirs(pathjoin(OUT, path))
+            with open(pathjoin(OUT, path, 'index.html'), 'w') as result:
                 result.write(TEMPLATE.format(
                     root_url = ROOT_URL,
                     header = ROOT_TITLE,
                     year = datetime.date.today().year,
                     title = (title + ' - ' if path else '') + ROOT_TITLE,
-                    canonical_url = urlparse.urljoin(ROOT_URL, canonical_path) if path else ROOT_URL,
-                    permalink_url = urlparse.urljoin(ROOT_URL, canonical_path),
-                    css_url = urlparse.urljoin(ROOT_URL, STYLESHEET_PATH),
-                    favicon_url = urlparse.urljoin(ROOT_URL, FAVICON_PATH),
-                    preview_image_url = urlparse.urljoin(ROOT_URL, PREVIEW_IMAGE_PATH),
-                    source_code_url = urlparse.urljoin(REPO_URL, doc),
+                    canonical_url = urljoin(ROOT_URL, canonical_path) if path else ROOT_URL,
+                    permalink_url = urljoin(ROOT_URL, canonical_path),
+                    css_url = urljoin(ROOT_URL, STYLESHEET_PATH),
+                    favicon_url = urljoin(ROOT_URL, FAVICON_PATH),
+                    preview_image_url = urljoin(ROOT_URL, PREVIEW_IMAGE_PATH),
+                    source_code_url = urljoin(REPO_URL, doc),
                     description = description,
                     content = '\n'.join(content),
                 ))
