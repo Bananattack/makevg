@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import os
+import sys
 import shutil
 import datetime
 import urlparse
@@ -87,6 +88,10 @@ if __name__ == '__main__':
     else:
         os.makedirs(OUT)
 
+    if '--local' in sys.argv:
+        print('\n--- Local mode. ---\n')
+        ROOT_URL = ''
+
     docs = listdir(SRC, ['.md'])
     stickied = False
     if not len(docs):
@@ -111,12 +116,16 @@ if __name__ == '__main__':
         description = settings['description'][0] if 'description' in settings else ROOT_DESCRIPTION
 
         if 'explicit_path' in settings:
+            if len(paths) == 1:
+                exit('\n*** fatal: "' + paths[0] + '" contains no paths, but "explicit_path" was specified.')
             paths.pop(0)
 
         canonical_path = settings['canonical'][0] if 'canonical' in settings else paths[0]
 
         if 'sticky' in settings:
-            stickied = True
+            if stickied:
+                exit('\n*** fatal: sticky conflict: "' + canonical_path + '" and "' + stickied + '".')
+            stickied = canonical_path
             paths.append('')
         
         print(title + ' -> ' + ', '.join(urljoin(ROOT_URL, path) for path in paths))
