@@ -2,7 +2,6 @@
 title: Sarnia Pop Culture Show 2013
 path: spcs2013
 explicit_path
-sticky
 ```
 <h2>Andrew G. Crowell</h2>
 <h3>Independent Game Developer, Programmer, Pixel Artist</h3>
